@@ -27,7 +27,7 @@ services:
   api:
     build:
       context: .
-      dockerfile: services/api/Dockerfile
+      dockerfile: Dockerfile
     ports:
       - "8001:8000"
 
@@ -54,7 +54,7 @@ services:
   scheduler:
     build:
       context: .
-      dockerfile: services/api/Dockerfile
+      dockerfile: Dockerfile
 
     environment:
       - DATABASE_URL=postgresql+asyncpg://rguser:rgpass123@postgres:5432/regraph
