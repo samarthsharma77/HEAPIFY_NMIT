@@ -1,5 +1,6 @@
 "use client";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useMemo, useState } from "react";

@@ -224,11 +224,11 @@ export default function ComplianceFeedPage() {
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
             <span className="text-sm font-medium text-red-300">
-              Portal Unreachable: {PORTAL_LABELS[portalUnreachable.portal] ?? portalUnreachable.portal}
+              Portal Unreachable: {PORTAL_LABELS[portalUnreachable.portal as string] ?? (portalUnreachable.portal as string)}
             </span>
           </div>
           <div className="mt-1 text-[11px] font-mono text-red-300/60">
-            {portalUnreachable.error}
+            {portalUnreachable.error as string}
           </div>
         </div>
       )}

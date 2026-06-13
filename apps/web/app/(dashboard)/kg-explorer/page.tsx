@@ -66,8 +66,6 @@ export default function KGExplorerPage() {
                 due_date_rule: n.due_date_rule,
               }))}
               edges={graphData.edges}
-              width={800}
-              height={600}
             />
           ) : (
             <div className="absolute inset-0 flex items-center justify-center text-white/50">
