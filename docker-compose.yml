@@ -25,7 +25,9 @@ services:
       - redis_data:/data
 
   api:
-    build: ./services/api
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
     ports:
       - "8001:8000"
 
@@ -50,7 +52,9 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   scheduler:
-    build: ./services/api
+    build:
+      context: .
+      dockerfile: services/api/Dockerfile
 
     environment:
       - DATABASE_URL=postgresql+asyncpg://rguser:rgpass123@postgres:5432/regraph
