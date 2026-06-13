@@ -82,6 +82,7 @@ export default function ComplianceFeedPage() {
   const [isTriggering, setIsTriggering] = useState(false);
   const [scrapingHealth, setScrapingHealth] = useState<ScrapingHealth | null>(null);
   const [countdown, setCountdown] = useState<number | null>(null);
+  const [isClearing, setIsClearing] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -183,6 +184,20 @@ export default function ComplianceFeedPage() {
       setOpen(false);
     } finally {
       setIsTriggering(false);
+    }
+  };
+
+  const clearHistory = async () => {
+    if (isClearing || deltas.length === 0) return;
+    if (!window.confirm("Clear all delta history? This cannot be undone.")) return;
+    setIsClearing(true);
+    try {
+      await api.delete("/admin/deltas");
+      setExpandedId(null);
+      setDeltas([]);
+      await loadStatuses();
+    } finally {
+      setIsClearing(false);
     }
   };
 
@@ -384,8 +399,20 @@ export default function ComplianceFeedPage() {
 
       {/* ─── Delta History ─── */}
       <Card className="glass border-white/[0.06] p-5 animate-fade-in-up stagger-2">
-        <div className="text-sm font-semibold">Delta History</div>
-        <div className="mt-0.5 text-[11px] font-mono text-white/30">Regulation snapshots with before/after comparison — auto-refreshes every 30s</div>
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <div className="text-sm font-semibold">Delta History</div>
+            <div className="mt-0.5 text-[11px] font-mono text-white/30">Regulation snapshots with before/after comparison — auto-refreshes every 30s</div>
+          </div>
+          <Button
+            variant="secondary"
+            disabled={deltas.length === 0 || isClearing}
+            onClick={clearHistory}
+            className="shrink-0 border-red-500/20 text-red-300 hover:bg-red-500/10 hover:text-red-200 disabled:opacity-40"
+          >
+            {isClearing ? "Clearing..." : "Clear History"}
+          </Button>
+        </div>
         <div className="mt-4 overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-left text-[10px] font-mono text-white/30 tracking-wider uppercase">

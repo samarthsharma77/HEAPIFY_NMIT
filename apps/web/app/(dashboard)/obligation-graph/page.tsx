@@ -82,7 +82,11 @@ export default function ObligationGraphPage() {
     return true;
   });
   const filteredSet = new Set(filteredNodes.map((n) => n.node_id));
-  const filteredEdges = (graph?.edges ?? []).filter((e) => filteredSet.has(e.source) && filteredSet.has(e.target));
+  const filteredEdges = (graph?.edges ?? []).filter((e) => {
+    const sourceId = typeof e.source === "object" ? (e.source as any).node_id : e.source;
+    const targetId = typeof e.target === "object" ? (e.target as any).node_id : e.target;
+    return filteredSet.has(sourceId) && filteredSet.has(targetId);
+  });
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-[280px_1fr] animate-fade-in-up">

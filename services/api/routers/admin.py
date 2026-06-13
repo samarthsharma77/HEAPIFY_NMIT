@@ -111,6 +111,17 @@ async def admin_deltas(db: AsyncSession = Depends(get_db)):
     return out
 
 
+@router.delete("/deltas")
+async def clear_deltas(db: AsyncSession = Depends(get_db)):
+    """Clear all regulation delta history shown in the compliance feed."""
+    await db.execute(
+        ComplianceAlert.__table__.update().values(regulation_delta_id=None)
+    )
+    result = await db.execute(delete(RegulationDelta))
+    await db.commit()
+    return {"status": "ok", "deleted_count": result.rowcount or 0}
+
+
 @router.get("/portal-status")
 async def portal_status(db: AsyncSession = Depends(get_db)):
     """

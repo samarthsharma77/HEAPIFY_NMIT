@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import func, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import CAALLedger, get_db
@@ -22,6 +22,14 @@ async def paginated_ledger(
     q = q.order_by(CAALLedger.timestamp.desc()).offset((page - 1) * page_size).limit(page_size)
     rows = await db.scalars(q)
     return rows.all()
+
+
+@router.delete("/ledger")
+async def clear_ledger(db: AsyncSession = Depends(get_db)):
+    """Clear all CAAL audit ledger entries shown in the audit trail."""
+    result = await db.execute(delete(CAALLedger))
+    await db.commit()
+    return {"status": "ok", "deleted_count": result.rowcount or 0}
 
 
 @router.get("/ledger/{entry_id}")

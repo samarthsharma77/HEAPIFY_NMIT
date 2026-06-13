@@ -38,7 +38,10 @@ export function KGVisualization({
   const ref = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
-  const data = useMemo(() => ({ nodes: [...nodes], edges: [...edges] }), [nodes, edges]);
+  const data = useMemo(() => ({
+    nodes: nodes.map(n => ({ ...n })),
+    edges: edges.map(e => ({ ...e }))
+  }), [nodes, edges]);
 
   useEffect(() => {
     const svgEl = ref.current;

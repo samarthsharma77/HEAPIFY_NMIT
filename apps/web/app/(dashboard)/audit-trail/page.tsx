@@ -43,9 +43,14 @@ export default function AuditTrailPage() {
   const [agents, setAgents] = useState<AgentSum[]>([]);
   const [agentF, setAgentF] = useState("");
   const [actionF, setActionF] = useState("");
+  const [isClearing, setIsClearing] = useState(false);
+
+  const loadAgents = () => {
+    api.get<AgentSum[]>("/audit/agents").then(setAgents).catch(() => setAgents([]));
+  };
 
   useEffect(() => { fetchLedger({ page: 1, pageSize: 50, businessId: bid || undefined }); }, [fetchLedger, bid]);
-  useEffect(() => { api.get<AgentSum[]>("/audit/agents").then(setAgents).catch(() => setAgents([])); }, [api]);
+  useEffect(() => { loadAgents(); }, [api]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const doExport = async () => {
     const id = bid || "11111111-1111-1111-1111-111111111001";
@@ -68,6 +73,21 @@ export default function AuditTrailPage() {
     const p = JSON.stringify(e.action_payload, Object.keys(e.action_payload).sort(), 0);
     const c = await sha256(`${e.agent_did}${e.timestamp}${p}`);
     setVerify(v => ({ ...v, [e.id]: c === e.action_hash ? "✓ verified" : "✗ mismatch" }));
+  };
+
+  const clearHistory = async () => {
+    if (isClearing || entries.length === 0) return;
+    if (!window.confirm("Clear all audit trail history? This cannot be undone.")) return;
+    setIsClearing(true);
+    try {
+      await api.delete("/audit/ledger");
+      setVerify({});
+      setExp({});
+      await fetchLedger({ page: 1, pageSize: 50, businessId: bid || undefined });
+      loadAgents();
+    } finally {
+      setIsClearing(false);
+    }
   };
 
   const filtered = entries.filter((e: any) => {
@@ -113,6 +133,20 @@ export default function AuditTrailPage() {
       </Card>
 
       <Card className="glass border-white/[0.06] p-5">
+        <div className="flex items-center justify-between gap-4 mb-4">
+          <div>
+            <div className="text-sm font-semibold">Audit History</div>
+            <div className="mt-0.5 text-[11px] font-mono text-white/30">Cryptographic ledger entries — verify hashes or expand for payload details</div>
+          </div>
+          <Button
+            variant="secondary"
+            disabled={entries.length === 0 || isClearing}
+            onClick={clearHistory}
+            className="shrink-0 border-red-500/20 text-red-300 hover:bg-red-500/10 hover:text-red-200 disabled:opacity-40"
+          >
+            {isClearing ? "Clearing..." : "Clear History"}
+          </Button>
+        </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead className="text-left text-[10px] font-mono text-white/25 uppercase">

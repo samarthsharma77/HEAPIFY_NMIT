@@ -48,7 +48,7 @@ export default function HITLPage() {
         title: `${decision === "approved" ? "✓ Approved" : "✗ Rejected"}`,
         description: "Action recorded in CAAL ledger.",
       });
-    } catch (err) {
+    } catch (_err) {
       toast({
         title: "Action failed",
         description: "Could not reach the API. Please try again.",
@@ -63,7 +63,7 @@ export default function HITLPage() {
     try {
       await api.post("/hitl/queue/test-create?business_id=11111111-1111-1111-1111-111111111001");
       toast({ title: "Test HITL item created", description: "A mock divergence scenario has been added." });
-    } catch (err) {
+    } catch (_err) {
       toast({
         title: "Creation failed",
         description: "Could not reach the API. Please try again.",
