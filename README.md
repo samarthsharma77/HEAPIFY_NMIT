@@ -2,7 +2,11 @@
   <img src="https://img.shields.io/badge/RegGraph_AI-Autonomous_Compliance_OS-f97316?style=for-the-badge&labelColor=0a0800" alt="RegGraph AI" />
 </p>
 
+<<<<<<< HEAD
 <h1 align="center">⚡ RegGraph AI — Autonomous Compliance </h1>
+=======
+<h1 align="center">RegGraph AI — Autonomous Compliance OS</h1>
+>>>>>>> e53d4cb6dccc63ac50c13b9f948cf471f5a7b2e9
 
 <p align="center">
   <strong>An agentic, dual-rail AI platform that autonomously monitors Indian regulatory portals, detects changes, cascades obligation updates, and escalates to humans — all before the deadline.</strong>
@@ -290,6 +294,7 @@ Every compliance assessment runs through two independent rails:
 - **Rail B (Deterministic):** Python rule engine with hardcoded legal thresholds
 
 If `|confidence_A - confidence_B| > threshold`, the result is automatically escalated to the HITL queue. This ensures no fully autonomous decision is made when the AI is uncertain.
+
 
 ### Cryptographic Audit Trail (CAAL)
 Every agent action is:
